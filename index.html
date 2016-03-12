@@ -7,14 +7,27 @@
       <script src="bundle.js" type="text/javascript" charset="utf-8" defer></script>
     </head>
     <body class="container-fluid">
-      <h1>Example</h1>
 
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-      minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-      ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-      cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-      est laborum.</p>
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+         <!-- Buttons get grouped for better mobile display -->
+         <div class="navbar-header">
+           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
+             <span class="sr-only">Toggle navigation</span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+             <span class="icon-bar"></span>
+           </button>
+         </div>
+
+         <div class="collapse navbar-collapse" id="main-navbar">
+           <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>
+           <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-in-modal">Sign In</button>
+           <button type="button" class="btn btn-default navbar-btn signed-in" data-toggle="modal" data-target="#change-password-modal">Change Password</button>
+           <button type="button" class="btn btn-default navbar-btn signed-in" data-toggle="modal" data-target="#sign-out-modal">Sign Out</button>
+         </div><!-- /.navbar-collapse -->
+       </div><!-- /.container-fluid -->
+      </nav>
+
     </body>
 </html>
