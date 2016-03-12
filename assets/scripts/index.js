@@ -70,7 +70,7 @@ let setChangePasswordListener = function(){
     e.preventDefault();
     var formData = new FormData(e.target);
     $.ajax({
-      url: myApp.BASE_URL + '/change-password/' + myApp.user.id,
+      url: myApp.BASE_URL + '/change-password/' + myApp.user._id,
       method: 'PATCH',
       headers: {
         Authorization: 'Token token=' + myApp.user.token,
@@ -92,7 +92,7 @@ let setSignOutListener = function(){
   $('#sign-out-button').on('click', function(e) {
     e.preventDefault();
     $.ajax({
-      url: myApp.BASE_URL + '/sign-out/' + myApp.user.id,
+      url: myApp.BASE_URL + '/sign-out/' + myApp.user._id,
       method: 'DELETE',
       headers: {
         Authorization: 'Token token=' + myApp.user.token,
