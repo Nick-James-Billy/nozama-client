@@ -163,7 +163,7 @@ let createPurchase = function() {
   }).done(function(data) {
     console.log(data);
     console.log('create empty cart');
-    getPurchases();
+    indexPurchases();
     currentCartId = data.purchase._id;
     console.log(currentCartId);
     // myApp.task = data.task;
@@ -173,7 +173,12 @@ let createPurchase = function() {
   });
 };
 
+let clearPurchases = function() {
+  $('.purchase').empty();
+}
+
 let displayPurchases = function(response){
+  clearPurchases();
   let responsePurchases = response.purchases;
   console.log(responsePurchases);
   let purchaseListingTemplate = require('./purchase-listing.handlebars');
@@ -181,7 +186,7 @@ let displayPurchases = function(response){
   console.log('display purchases');
 };
 
-let getPurchases = function(){
+let indexPurchases = function(){
   $.ajax({
       url: myApp.BASE_URL + '/purchases',
       method: 'GET',
@@ -194,6 +199,25 @@ let getPurchases = function(){
       console.log(data);
       console.log('get purchases success');
       displayPurchases(data);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+};
+
+let showCurrentCart = function(){
+  $.ajax({
+      url: myApp.BASE_URL + '/purchases/' + currentCartId,
+      method: 'GET',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      dataType: 'json'
+    })
+    .done(function(data){
+      console.log(data);
+      console.log('get purchases success');
+//    displayCart(data);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -233,6 +257,31 @@ let addToCart = function(e) {
   showItem(itemId);
 };
 
+let removePurchase = function(e) {
+  e.preventDefault();
+  console.log(e.target);
+  let removeCartId = $(e.target).attr('data-item-id');
+  console.log(removeCartId);
+  if (!myApp.user) {
+    console.error('wrong');
+  }
+  $.ajax({
+    url: myApp.BASE_URL + '/purchases/' + removeCartId,
+    method: 'DELETE',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    contentType: false,
+    processData: false,
+  }).done(function() {
+    console.log('purchase deleted');
+    indexPurchases();
+  }).fail(function(jqxhr) {
+    console.error(jqxhr);
+  });
+};
+
+
 $(document).ready(() => {
   indexItems();
   $('.signed-out').show();
@@ -242,5 +291,7 @@ $(document).ready(() => {
   setChangePasswordListener();
   setSignOutListener();
   $('body').on('click', '.add-to-cart', addToCart);
+  $('body').on('click', '.remove-to-cart', removePurchase);
+
 
 });
