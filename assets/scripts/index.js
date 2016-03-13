@@ -30,6 +30,7 @@ let signIn = function(e){
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
+    createPurchase();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -107,6 +108,7 @@ let setSignOutListener = function(){
   });
 };
 
+//Items AJAX Requests
 let displayItems = function(response){
   let responseItems = response.items;
   console.log(responseItems);
@@ -125,6 +127,55 @@ let getItems = function(){
       console.log(data);
       console.log('get items success');
       displayItems(data);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+};
+
+//Purchases AJAX Requests
+let createPurchase = function() {
+  $.ajax({
+    url: myApp.BASE_URL + '/purchases',
+    method: 'POST',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    processData: false,
+    contentType: false,
+    data: {},
+  }).done(function(data) {
+    console.log(data);
+    console.log('create empty cart');
+    getPurchases();
+    // myApp.task = data.task;
+    // console.log('end create task');
+  }).fail(function(jqxhr) {
+    console.error(jqxhr);
+  });
+};
+
+let displayPurchases = function(response){
+  let responsePurchases = response.purchases;
+  console.log(responsePurchases);
+  let purchaseListingTemplate = require('./purchase-listing.handlebars');
+  $('.content').append(purchaseListingTemplate({responsePurchases}));
+  console.log('display purchases');
+};
+
+let getPurchases = function(){
+  $.ajax({
+      url: myApp.BASE_URL + '/purchases',
+      method: 'GET',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      dataType: 'json'
+    })
+    .done(function(data){
+      console.log(data);
+      console.log('get purchases success');
+      displayPurchases(data);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
