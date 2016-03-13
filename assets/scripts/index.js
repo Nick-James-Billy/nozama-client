@@ -107,7 +107,33 @@ let setSignOutListener = function(){
   });
 };
 
+let displayItems = function(response){
+  let responseItems = response.items;
+  console.log(responseItems);
+  let itemListingTemplate = require('./item-listing.handlebars');
+  $('.content').append(itemListingTemplate({responseItems}));
+  console.log('display items');
+};
+
+let getItems = function(){
+  $.ajax({
+      url: myApp.BASE_URL + '/items',
+      method: 'GET',
+      dataType: 'json'
+    })
+    .done(function(data){
+      console.log(data);
+      console.log('get items success');
+      displayItems(data);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+};
+
+
 $(document).ready(() => {
+  getItems();
   $('.signed-out').show();
   $('.signed-in').hide();
   setSignUpListener();
