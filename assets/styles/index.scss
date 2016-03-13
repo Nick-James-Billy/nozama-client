@@ -1,2 +1,8 @@
 $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
+
+.card {
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: 10px;
+}

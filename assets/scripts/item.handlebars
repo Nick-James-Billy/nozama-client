@@ -1,6 +1,8 @@
-<div class="item center-block" data-value={{_id}}>
-      <div class="item-name"> {{name}}: ${{price}} <div>
-      <div class="item-desc"> {{description}} <div>
-      <div><button type="button" class="btn btn-success btn-xs add-to-cart" data-item-id="{{_id}}">Add To Cart</button></div>
-
+<div class="card">
+  <img class="card-img-top" src="{{imageLocation}}">
+  <div class="card-block">
+    <h4 class="card-title"> {{name}}: ${{price}} </h4>
+    <p class="card-text"> {{description}} </p>
+    <button type="button" class="btn btn-success btn-xs add-to-cart" data-item-id="{{_id}}">Add To Cart</button>
+  </div>
 </div>
