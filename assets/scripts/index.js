@@ -139,6 +139,24 @@ let setCart = function(){
     });
 };
 
+let getPurchaseHistory = function(){
+  $.ajax({
+    url: myApp.BASE_URL + '/purchaseHistory',
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    dataType: 'json'
+  })
+  .done(function(data){
+    console.log('get purchases success');
+    console.log(data);
+    // displayPurchases(data.purchases);
+  })
+  .fail(function(jqxhr){
+    console.error(jqxhr);
+  });
+};
 //Items AJAX Requests
 //------------------------------------------------------------------------
 let displayItems = function(response){
@@ -185,6 +203,7 @@ $(document).ready(() => {
   indexItems();
   $('.signed-out').show();
   $('.signed-in').hide();
+  $('#purchase-history-btn').on('click', getPurchaseHistory);
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
