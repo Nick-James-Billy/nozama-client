@@ -111,14 +111,16 @@ let setSignOutListener = function(){
 //Purchase AJAX Requests
 //------------------------------------------------------------------------
 
-let displayCart = function(response){
-  let responsePurchases = response;
-  console.log(responsePurchases);
-  let purchaseListingTemplate = require('./purchase-listing.handlebars');
-  $('.cart').html(purchaseListingTemplate({responsePurchases}));
+//shows items in cart in cart dropdown
+//only displays purchases with completed:false
+let displayCart = function(items){
+  let cartTemplate = require('./cart.handlebars');
+  $('.cart').html(cartTemplate({items}));
   console.log('display purchases');
 };
 
+//gets purchase with completed: false, sets client cart equal to response,
+//then calls function to display current cart
 let setCart = function(){
   $.ajax({
       url: myApp.BASE_URL + '/currentCart',
@@ -131,14 +133,24 @@ let setCart = function(){
     .done(function(data){
       console.log('get cart success');
       console.log(data);
-      myApp.cart = data;
-      displayCart(data.purchases);
+      myApp.cart = data.purchases[0];
+      displayCart(myApp.cart.items);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
     });
 };
 
+//Shows purchase history in purchase histroy modal
+let displayPurchases = function(response){
+  let responsePurchases = response;
+  console.log(responsePurchases);
+  let purchaseListingTemplate = require('./purchase-listing.handlebars');
+  $('.purchase-history').html(purchaseListingTemplate({responsePurchases}));
+  console.log('display purchases');
+};
+
+//retrieves purchases with completed: true, then calls function to display them
 let getPurchaseHistory = function(){
   $.ajax({
     url: myApp.BASE_URL + '/purchaseHistory',
@@ -151,11 +163,38 @@ let getPurchaseHistory = function(){
   .done(function(data){
     console.log('get purchases success');
     console.log(data);
-    // displayPurchases(data.purchases);
+    displayPurchases(data.purchases);
   })
   .fail(function(jqxhr){
     console.error(jqxhr);
   });
+};
+
+let updateCart = function(){
+  $.ajax({
+    url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
+    method: 'PATCH',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    data: {
+      "purchase":{
+        "items": myApp.cart.items
+      }
+    }
+  }).done(function() {
+    console.log('task edit');
+  }).fail(function(jqxhr) {
+    console.error(jqxhr);
+  });
+};
+
+let addItemToCart = function(item){
+  console.log(item);
+  myApp.cart.items.push(item);
+  console.log(myApp.cart);
+  updateCart();
+  displayCart(myApp.cart.items);
 };
 //Items AJAX Requests
 //------------------------------------------------------------------------
@@ -183,16 +222,16 @@ let indexItems = function(){
     });
 };
 
-let showItem = function(itemId){
+let getItem = function(e){
+  let itemId = $(e.target).attr('data-item-id');
   $.ajax({
       url: myApp.BASE_URL + '/items/' + itemId ,
       method: 'GET',
       dataType: 'json'
     })
     .done(function(data){
-      // console.log(data);
-      console.log('show item success');
-      // updatePurchase(data);
+      console.log('get item success');
+      addItemToCart(data.item);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -204,6 +243,7 @@ $(document).ready(() => {
   $('.signed-out').show();
   $('.signed-in').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
+  $('.content').on('click', '.add-to-cart', getItem);
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
