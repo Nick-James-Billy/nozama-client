@@ -175,14 +175,14 @@ let createPurchase = function() {
 
 let clearPurchases = function() {
   $('.purchase').empty();
-}
+};
 
 let displayPurchases = function(response){
   clearPurchases();
   let responsePurchases = response.purchases;
   console.log(responsePurchases);
   let purchaseListingTemplate = require('./purchase-listing.handlebars');
-  $('.content').append(purchaseListingTemplate({responsePurchases}));
+  $('.purchase-history').append(purchaseListingTemplate({responsePurchases}));
   console.log('display purchases');
 };
 

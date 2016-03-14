@@ -21,6 +21,7 @@
          </div>
 
          <div class="collapse navbar-collapse" id="main-navbar">
+           <button type="button" class="navbar-btn btn navbar-right btn-default signed-in" data-toggle="modal" data-target="#purchase-history-modal">Purchase History</button>
            <button type="button" class="navbar-btn btn navbar-right btn-default signed-in" data-toggle="collapse" data-target="#collapseExample">Show Cart</button>
            <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>
            <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-in-modal">Sign In</button>
@@ -121,6 +122,24 @@
               <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Purchase History Modal -->
+      <div id="purchase-history-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Purchase History</h4>
+            </div>
+            <div class="modal-body purchase-history">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
         </div>
       </div>
 
