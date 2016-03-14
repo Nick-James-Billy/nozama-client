@@ -225,7 +225,7 @@ let getPurchaseHistory = function(){
     .fail(function(jqxhr){
       console.error(jqxhr);
     });
-}
+};
 
 let showCurrentCart = function(){
   $.ajax({
