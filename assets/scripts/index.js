@@ -25,13 +25,14 @@ let signIn = function(e){
     processData: false,
     data: formData,
   }).done(function(data) {
-    console.log(data);
+    // console.log(data);
     myApp.user = data.user;
-    console.log(myApp.user);
+    // console.log(myApp.user);
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
-    createPurchase();
+    // createPurchase();
+    showCurrentCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -49,7 +50,7 @@ let setSignUpListener = function(){
       processData: false,
       data: formData,
     }).done(function(data) {
-      console.log(data);
+      // console.log(data);
       signIn(e);
       $('#sign-up-modal').modal('hide');
     }).fail(function(jqxhr) {
@@ -81,7 +82,7 @@ let setChangePasswordListener = function(){
       processData: false,
       data: formData,
     }).done(function(data) {
-      console.log(data);
+      // console.log(data);
       $('#change-password-modal').modal('hide');
     }).fail(function(jqxhr) {
       console.error(jqxhr);
@@ -112,10 +113,10 @@ let setSignOutListener = function(){
 //Items AJAX Requests
 let displayItems = function(response){
   let responseItems = response.items;
-  console.log(responseItems);
+  // console.log(responseItems);
   let itemListingTemplate = require('./item-listing.handlebars');
   $('.content').append(itemListingTemplate({responseItems}));
-  console.log('display items');
+  // console.log('display items');
 };
 
 let indexItems = function(){
@@ -125,7 +126,7 @@ let indexItems = function(){
       dataType: 'json'
     })
     .done(function(data){
-      console.log(data);
+      // console.log(data);
       console.log('index items success');
       displayItems(data);
     })
@@ -136,12 +137,12 @@ let indexItems = function(){
 
 let showItem = function(itemId){
   $.ajax({
-      url: myApp.BASE_URL + '/items/' +itemId ,
+      url: myApp.BASE_URL + '/items/' + itemId ,
       method: 'GET',
       dataType: 'json'
     })
     .done(function(data){
-      console.log(data);
+      // console.log(data);
       console.log('show item success');
       updatePurchase(data);
     })
@@ -161,11 +162,11 @@ let createPurchase = function() {
     contentType: false,
     data: {},
   }).done(function(data) {
-    console.log(data);
+    // console.log(data);
     console.log('create empty cart');
     indexPurchases();
     currentCartId = data.purchase._id;
-    console.log(currentCartId);
+    // console.log(currentCartId);
     // myApp.task = data.task;
     // console.log('end create task');
   }).fail(function(jqxhr) {
@@ -185,6 +186,8 @@ let displayPurchases = function(response){
   $('.purchase-history').append(purchaseListingTemplate({responsePurchases}));
   console.log('display purchases');
 };
+
+
 
 let indexPurchases = function(){
   $.ajax({
@@ -207,7 +210,7 @@ let indexPurchases = function(){
 
 let showCurrentCart = function(){
   $.ajax({
-      url: myApp.BASE_URL + '/purchases/' + currentCartId,
+      url: myApp.BASE_URL + '/currentCart',
       method: 'GET',
       headers: {
         Authorization: 'Token token=' + myApp.user.token,
@@ -215,18 +218,26 @@ let showCurrentCart = function(){
       dataType: 'json'
     })
     .done(function(data){
+      console.log('get cart success');
       console.log(data);
-      console.log('get purchases success');
-//    displayCart(data);
+      displayCart(data.purchases);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
     });
 };
 
+let displayCart = function(response){
+  let responsePurchases = response;
+  console.log(responsePurchases);
+  let purchaseListingTemplate = require('./purchase-listing.handlebars');
+  $('.cart').html(purchaseListingTemplate({responsePurchases}));
+  console.log('display purchases');
+};
+
 let updatePurchase = function(e){
-  console.log(e.item);
-  console.log('updated');
+  // console.log(e.item);
+  // console.log('updated');
   if (!myApp.user) {
     console.error('wrong');
   }
@@ -251,7 +262,7 @@ let updatePurchase = function(e){
 
 let addToCart = function(e) {
   e.preventDefault();
-  console.log(e.target);
+  // console.log(e.target);
   let itemId = $(e.target).attr('data-item-id');
   console.log(itemId);
   showItem(itemId);
@@ -259,9 +270,9 @@ let addToCart = function(e) {
 
 let removePurchase = function(e) {
   e.preventDefault();
-  console.log(e.target);
+  // console.log(e.target);
   let removeCartId = $(e.target).attr('data-item-id');
-  console.log(removeCartId);
+  // console.log(removeCartId);
   if (!myApp.user) {
     console.error('wrong');
   }
