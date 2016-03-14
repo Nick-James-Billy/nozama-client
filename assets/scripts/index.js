@@ -10,7 +10,6 @@ const myApp = {
   BASE_URL: "http://localhost:3000"
 };
 
-let currentCartId;
 //Account AJAX requests
 
 //Makes Sign In AJAX request
@@ -31,9 +30,7 @@ let signIn = function(e){
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
-    // createPurchase();
-    showCurrentCart();
-    getPurchaseHistory();
+    setCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -111,7 +108,39 @@ let setSignOutListener = function(){
   });
 };
 
+//Purchase AJAX Requests
+//------------------------------------------------------------------------
+
+let displayCart = function(response){
+  let responsePurchases = response;
+  console.log(responsePurchases);
+  let purchaseListingTemplate = require('./purchase-listing.handlebars');
+  $('.cart').html(purchaseListingTemplate({responsePurchases}));
+  console.log('display purchases');
+};
+
+let setCart = function(){
+  $.ajax({
+      url: myApp.BASE_URL + '/currentCart',
+      method: 'GET',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      dataType: 'json'
+    })
+    .done(function(data){
+      console.log('get cart success');
+      console.log(data);
+      myApp.cart = data;
+      displayCart(data.purchases);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+};
+
 //Items AJAX Requests
+//------------------------------------------------------------------------
 let displayItems = function(response){
   let responseItems = response.items;
   // console.log(responseItems);
@@ -145,172 +174,12 @@ let showItem = function(itemId){
     .done(function(data){
       // console.log(data);
       console.log('show item success');
-      updatePurchase(data);
+      // updatePurchase(data);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
     });
 };
-//Purchases AJAX Requests
-let createPurchase = function() {
-  $.ajax({
-    url: myApp.BASE_URL + '/purchases',
-    method: 'POST',
-    headers: {
-      Authorization: 'Token token=' + myApp.user.token,
-    },
-    processData: false,
-    contentType: false,
-    data: {},
-  }).done(function(data) {
-    // console.log(data);
-    console.log('create empty cart');
-    indexPurchases();
-    currentCartId = data.purchase._id;
-    // console.log(currentCartId);
-    // myApp.task = data.task;
-    // console.log('end create task');
-  }).fail(function(jqxhr) {
-    console.error(jqxhr);
-  });
-};
-
-let clearPurchases = function() {
-  $('.purchase').empty();
-};
-
-let displayPurchases = function(response){
-  let responsePurchases = response.purchases;
-  console.log(responsePurchases);
-  let purchaseListingTemplate = require('./purchase-listing.handlebars');
-  $('.purchase-history').append(purchaseListingTemplate({responsePurchases}));
-  console.log('display purchases');
-};
-
-
-
-let indexPurchases = function(){
-  $.ajax({
-      url: myApp.BASE_URL + '/purchases',
-      method: 'GET',
-      headers: {
-        Authorization: 'Token token=' + myApp.user.token,
-      },
-      dataType: 'json'
-    })
-    .done(function(data){
-      console.log(data);
-      console.log('get purchases success');
-      displayPurchases(data);
-    })
-    .fail(function(jqxhr){
-      console.error(jqxhr);
-    });
-};
-
-let getPurchaseHistory = function(){
-  $.ajax({
-      url: myApp.BASE_URL + '/purchaseHistory',
-      method: 'GET',
-      headers: {
-        Authorization: 'Token token=' + myApp.user.token,
-      },
-      dataType: 'json'
-    })
-    .done(function(data){
-      console.log('get purchases success');
-      console.log(data);
-      displayPurchases(data.purchases);
-    })
-    .fail(function(jqxhr){
-      console.error(jqxhr);
-    });
-};
-
-let showCurrentCart = function(){
-  $.ajax({
-      url: myApp.BASE_URL + '/currentCart',
-      method: 'GET',
-      headers: {
-        Authorization: 'Token token=' + myApp.user.token,
-      },
-      dataType: 'json'
-    })
-    .done(function(data){
-      console.log('get cart success');
-      console.log(data);
-      displayCart(data.purchases);
-    })
-    .fail(function(jqxhr){
-      console.error(jqxhr);
-    });
-};
-
-let displayCart = function(response){
-  let responsePurchases = response;
-  console.log(responsePurchases);
-  let purchaseListingTemplate = require('./purchase-listing.handlebars');
-  $('.cart').html(purchaseListingTemplate({responsePurchases}));
-  console.log('display purchases');
-};
-
-let updatePurchase = function(e){
-  // console.log(e.item);
-  // console.log('updated');
-  if (!myApp.user) {
-    console.error('wrong');
-  }
-  let item_add = e.item;
-  $.ajax({
-    url: myApp.BASE_URL + '/purchases/' + currentCartId,
-    method: 'PATCH',
-    headers: {
-      Authorization: 'Token token=' + myApp.user.token,
-    },
-    data: {
-      "purchase":{
-        "items": item_add
-      }
-    }
-  }).done(function() {
-    console.log('task edit');
-  }).fail(function(jqxhr) {
-    console.error(jqxhr);
-  });
-};
-
-let addToCart = function(e) {
-  e.preventDefault();
-  // console.log(e.target);
-  let itemId = $(e.target).attr('data-item-id');
-  console.log(itemId);
-  showItem(itemId);
-};
-
-let removePurchase = function(e) {
-  e.preventDefault();
-  // console.log(e.target);
-  let removeCartId = $(e.target).attr('data-item-id');
-  // console.log(removeCartId);
-  if (!myApp.user) {
-    console.error('wrong');
-  }
-  $.ajax({
-    url: myApp.BASE_URL + '/purchases/' + removeCartId,
-    method: 'DELETE',
-    headers: {
-      Authorization: 'Token token=' + myApp.user.token,
-    },
-    contentType: false,
-    processData: false,
-  }).done(function() {
-    console.log('purchase deleted');
-    indexPurchases();
-  }).fail(function(jqxhr) {
-    console.error(jqxhr);
-  });
-};
-
 
 $(document).ready(() => {
   indexItems();
@@ -320,8 +189,166 @@ $(document).ready(() => {
   setSignInListener();
   setChangePasswordListener();
   setSignOutListener();
-  $('body').on('click', '.add-to-cart', addToCart);
-  $('body').on('click', '.remove-to-cart', removePurchase);
-
-
+  // $('body').on('click', '.add-to-cart', addToCart);
+  // $('body').on('click', '.remove-to-cart', removePurchase);
 });
+
+// //Purchases AJAX Requests
+// let createPurchase = function() {
+//   $.ajax({
+//     url: myApp.BASE_URL + '/purchases',
+//     method: 'POST',
+//     headers: {
+//       Authorization: 'Token token=' + myApp.user.token,
+//     },
+//     processData: false,
+//     contentType: false,
+//     data: {},
+//   }).done(function(data) {
+//     // console.log(data);
+//     console.log('create empty cart');
+//     indexPurchases();
+//     currentCartId = data.purchase._id;
+//     // console.log(currentCartId);
+//     // myApp.task = data.task;
+//     // console.log('end create task');
+//   }).fail(function(jqxhr) {
+//     console.error(jqxhr);
+//   });
+// };
+//
+// let clearPurchases = function() {
+//   $('.purchase').empty();
+// };
+//
+// let displayPurchases = function(response){
+//   let responsePurchases = response.purchases;
+//   console.log(responsePurchases);
+//   let purchaseListingTemplate = require('./purchase-listing.handlebars');
+//   $('.purchase-history').html(purchaseListingTemplate({responsePurchases}));
+//   console.log('display purchases');
+// };
+//
+//
+//
+// let indexPurchases = function(){
+//   $.ajax({
+//       url: myApp.BASE_URL + '/purchases',
+//       method: 'GET',
+//       headers: {
+//         Authorization: 'Token token=' + myApp.user.token,
+//       },
+//       dataType: 'json'
+//     })
+//     .done(function(data){
+//       console.log(data);
+//       console.log('get purchases success');
+//       displayPurchases(data);
+//     })
+//     .fail(function(jqxhr){
+//       console.error(jqxhr);
+//     });
+// };
+//
+// let getPurchaseHistory = function(){
+//   $.ajax({
+//       url: myApp.BASE_URL + '/purchaseHistory',
+//       method: 'GET',
+//       headers: {
+//         Authorization: 'Token token=' + myApp.user.token,
+//       },
+//       dataType: 'json'
+//     })
+//     .done(function(data){
+//       console.log('get purchases success');
+//       console.log(data);
+//       displayPurchases(data.purchases);
+//     })
+//     .fail(function(jqxhr){
+//       console.error(jqxhr);
+//     });
+// };
+//
+// let showCurrentCart = function(){
+//   $.ajax({
+//       url: myApp.BASE_URL + '/currentCart',
+//       method: 'GET',
+//       headers: {
+//         Authorization: 'Token token=' + myApp.user.token,
+//       },
+//       dataType: 'json'
+//     })
+//     .done(function(data){
+//       console.log('get cart success');
+//       console.log(data);
+//       displayCart(data.purchases);
+//     })
+//     .fail(function(jqxhr){
+//       console.error(jqxhr);
+//     });
+// };
+//
+// let displayCart = function(response){
+//   let responsePurchases = response;
+//   console.log(responsePurchases);
+//   let purchaseListingTemplate = require('./purchase-listing.handlebars');
+//   $('.cart').html(purchaseListingTemplate({responsePurchases}));
+//   console.log('display purchases');
+// };
+//
+// let updatePurchase = function(e){
+//   // console.log(e.item);
+//   // console.log('updated');
+//   if (!myApp.user) {
+//     console.error('wrong');
+//   }
+//   let item_add = e.item;
+//   $.ajax({
+//     url: myApp.BASE_URL + '/purchases/' + currentCartId,
+//     method: 'PATCH',
+//     headers: {
+//       Authorization: 'Token token=' + myApp.user.token,
+//     },
+//     data: {
+//       "purchase":{
+//         "items": item_add
+//       }
+//     }
+//   }).done(function() {
+//     console.log('task edit');
+//   }).fail(function(jqxhr) {
+//     console.error(jqxhr);
+//   });
+// };
+//
+// let addToCart = function(e) {
+//   e.preventDefault();
+//   // console.log(e.target);
+//   let itemId = $(e.target).attr('data-item-id');
+//   console.log(itemId);
+//   showItem(itemId);
+// };
+//
+// let removePurchase = function(e) {
+//   e.preventDefault();
+//   // console.log(e.target);
+//   let removeCartId = $(e.target).attr('data-item-id');
+//   // console.log(removeCartId);
+//   if (!myApp.user) {
+//     console.error('wrong');
+//   }
+//   $.ajax({
+//     url: myApp.BASE_URL + '/purchases/' + removeCartId,
+//     method: 'DELETE',
+//     headers: {
+//       Authorization: 'Token token=' + myApp.user.token,
+//     },
+//     contentType: false,
+//     processData: false,
+//   }).done(function() {
+//     console.log('purchase deleted');
+//     indexPurchases();
+//   }).fail(function(jqxhr) {
+//     console.error(jqxhr);
+//   });
+// };
