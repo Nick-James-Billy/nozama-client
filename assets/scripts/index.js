@@ -143,7 +143,7 @@ let showItem = function(itemId){
     .done(function(data){
       console.log(data);
       console.log('show item success');
-      updatePurchase(data);
+      displayCart(data);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -166,6 +166,7 @@ let createPurchase = function() {
     indexPurchases();
     currentCartId = data.purchase._id;
     console.log(currentCartId);
+    showCurrentCart();
     // myApp.task = data.task;
     // console.log('end create task');
   }).fail(function(jqxhr) {
@@ -173,17 +174,22 @@ let createPurchase = function() {
   });
 };
 
-let clearPurchases = function() {
-  $('.purchase').empty();
-}
-
 let displayPurchases = function(response){
-  clearPurchases();
+  $('.purchase').empty();
   let responsePurchases = response.purchases;
   console.log(responsePurchases);
   let purchaseListingTemplate = require('./purchase-listing.handlebars');
-  $('.content').append(purchaseListingTemplate({responsePurchases}));
+  $('.purchase').append(purchaseListingTemplate({responsePurchases}));
   console.log('display purchases');
+};
+
+let displayCart = function(response){
+  $('.well').empty();
+  let responseCart = response.purchases;
+  console.log(responseCart);
+  let cartTemplate = require('./purchase.handlebars');
+  $('.well').append(cartTemplate({responseCart}));
+  console.log('display cart');
 };
 
 let indexPurchases = function(){
@@ -217,14 +223,14 @@ let showCurrentCart = function(){
     .done(function(data){
       console.log(data);
       console.log('get purchases success');
-//    displayCart(data);
+      displayCart(data);
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
     });
 };
 
-let updatePurchase = function(e){
+let updateCart = function(e){
   console.log(e.item);
   console.log('updated');
   if (!myApp.user) {
@@ -244,6 +250,7 @@ let updatePurchase = function(e){
     }
   }).done(function() {
     console.log('task edit');
+    showCurrentCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -255,6 +262,7 @@ let addToCart = function(e) {
   let itemId = $(e.target).attr('data-item-id');
   console.log(itemId);
   showItem(itemId);
+  indexPurchases();
 };
 
 let removePurchase = function(e) {
@@ -292,6 +300,4 @@ $(document).ready(() => {
   setSignOutListener();
   $('body').on('click', '.add-to-cart', addToCart);
   $('body').on('click', '.remove-to-cart', removePurchase);
-
-
 });
