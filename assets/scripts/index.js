@@ -292,6 +292,4 @@ $(document).ready(() => {
   setSignOutListener();
   $('body').on('click', '.add-to-cart', addToCart);
   $('body').on('click', '.remove-to-cart', removePurchase);
-
-
 });
