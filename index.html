@@ -6,7 +6,7 @@
       <script src="vendor.bundle.js" type="text/javascript" charset="utf-8" defer></script>
       <script src="bundle.js" type="text/javascript" charset="utf-8" defer></script>
     </head>
-    <body class="container-fluid">
+    <body class="container">
 
       <nav class="navbar navbar-default">
         <div class="container-fluid">
@@ -21,6 +21,7 @@
          </div>
 
          <div class="collapse navbar-collapse" id="main-navbar">
+           <button type="button" class="navbar-btn btn navbar-right btn-default signed-in" data-toggle="collapse" data-target="#collapseExample">Show Cart</button>
            <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-up-modal">Sign Up</button>
            <button type="button" class="btn btn-default navbar-btn signed-out" data-toggle="modal" data-target="#sign-in-modal">Sign In</button>
            <button type="button" class="btn btn-default navbar-btn signed-in" data-toggle="modal" data-target="#change-password-modal">Change Password</button>
@@ -123,15 +124,19 @@
         </div>
       </div>
 
-      <div class="container">
-        <div class="content">
-          Placeholder for LIST OF ITEMS
-        </div>
+      <!-- Show Cart Collapse -->
 
-        <div class="cart">
-          CART PLACEHOLDER
+      <div class="collapse" id="collapseExample">
+        <div class="well">
+          <p> Hey I am a collapseable thing</p>
         </div>
       </div>
+
+      <!-- Show Items -->
+            <div class="content">
+
+            </div>
+
 
     </body>
 </html>
