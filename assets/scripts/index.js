@@ -33,6 +33,7 @@ let signIn = function(e){
     $('#sign-in-modal').modal('hide');
     // createPurchase();
     showCurrentCart();
+    getPurchaseHistory();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -179,7 +180,6 @@ let clearPurchases = function() {
 };
 
 let displayPurchases = function(response){
-  clearPurchases();
   let responsePurchases = response.purchases;
   console.log(responsePurchases);
   let purchaseListingTemplate = require('./purchase-listing.handlebars');
@@ -207,6 +207,25 @@ let indexPurchases = function(){
       console.error(jqxhr);
     });
 };
+
+let getPurchaseHistory = function(){
+  $.ajax({
+      url: myApp.BASE_URL + '/purchaseHistory',
+      method: 'GET',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      dataType: 'json'
+    })
+    .done(function(data){
+      console.log('get purchases success');
+      console.log(data);
+      displayPurchases(data.purchases);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+}
 
 let showCurrentCart = function(){
   $.ajax({
