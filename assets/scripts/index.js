@@ -114,6 +114,7 @@ let setSignOutListener = function(){
 //shows items in cart in cart dropdown
 //only displays purchases with completed:false
 let displayCart = function(){
+  calculateTotal();
   let cart = myApp.cart;
   console.log("cart"+ myApp.cart);
   let cartTemplate = require('./cart.handlebars');
@@ -182,10 +183,7 @@ let updateCart = function(){
       Authorization: 'Token token=' + myApp.user.token,
     },
     data: {
-      "purchase":{
-        "items": myApp.cart.items,
-        "completed": myApp.cart.completed
-      }
+      "purchase": myApp.cart
     }
   }).done(function() {
     console.log('task edit');
@@ -282,6 +280,16 @@ let checkout = function() {
   myApp.cart.completed = true;
   updateCart();
   createCart();
+};
+
+let calculateTotal = function() {
+  let cartItems = myApp.cart.items;
+  let total = 0;
+  cartItems.forEach(function(item) {
+    total += Number(item.price);
+  });
+  myApp.cart.total = total;
+  console.log(total);
 };
 
 $(document).ready(() => {
