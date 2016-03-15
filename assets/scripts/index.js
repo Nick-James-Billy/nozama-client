@@ -111,7 +111,8 @@ let setSignOutListener = function(){
 //Purchase AJAX Requests
 //------------------------------------------------------------------------
 
-let indexCartItems = function(){
+//Add index of item in cart array as an attribute to each item object in the cart
+let addIndexToCartItems = function(){
   for (let i = 0; i < myApp.cart.items.length; i++){
     myApp.cart.items[i].index = i;
   }
@@ -176,6 +177,8 @@ let getPurchaseHistory = function(){
   });
 };
 
+//Updates cart (purchase with completed: false) in database to match cart object
+//stored in myApp.cart
 let updateCart = function(){
   $.ajax({
     url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
@@ -196,6 +199,8 @@ let updateCart = function(){
   });
 };
 
+//Takes an item to be added to the cart, pushes it into local cart items array,
+//then updates cart in database and displays updated cart
 let addItemToCart = function(item){
   myApp.cart.items.push(item);
   console.log(myApp.cart);
@@ -213,6 +218,8 @@ let displayItems = function(response){
   // console.log('display items');
 };
 
+//creates a new cart in database (empty items array, default completed: false)
+//then sets local cart to match new empty cart
 let createCart = function() {
   $.ajax({
     url: myApp.BASE_URL + '/purchases',
@@ -231,6 +238,8 @@ let createCart = function() {
   });
 };
 
+//called on ready
+//gets all items for sale from database and displays them
 let indexItems = function(){
   $.ajax({
       url: myApp.BASE_URL + '/items',
@@ -247,6 +256,8 @@ let indexItems = function(){
     });
 };
 
+//Called by add-to-cart button click handler
+//gets full item object from database, then adds it to the cart
 let getItem = function(e){
   let itemId = $(e.target).attr('data-item-id');
   $.ajax({
@@ -263,6 +274,9 @@ let getItem = function(e){
     });
 };
 
+//Called by checkout button in cart
+//Changes completed status of current cart to true, updates cart in database,
+//then creates a new cart to be displayed
 let checkout = function() {
   myApp.cart.completed = true;
   updateCart();
