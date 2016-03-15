@@ -1,4 +1,5 @@
 <div>
-  {{#each items}}{{> cart-item}}{{/each}}
+  {{#each cart.items}}{{> cart-item}}{{/each}}
 </div>
+<div class="total">Total: ${{cart.total}}</div>
 <button type="button" class="btn btn-success btn-s checkout" data-cart-id="{{_id}}">Checkout</button>

@@ -113,10 +113,12 @@ let setSignOutListener = function(){
 
 //shows items in cart in cart dropdown
 //only displays purchases with completed:false
-let displayCart = function(items){
+let displayCart = function(){
+  let cart = myApp.cart;
+  console.log("cart"+ myApp.cart);
   let cartTemplate = require('./cart.handlebars');
-  $('.cart').html(cartTemplate({items}));
-  console.log('display purchases: ' + items);
+  $('.cart').html(cartTemplate({cart}));
+  console.log('display items: ' + myApp.cart.items);
 };
 
 //gets purchase with completed: false, sets client cart equal to response,
@@ -134,7 +136,7 @@ let setCart = function(){
       console.log('get cart success');
       myApp.cart = data.purchases[0];
       console.log(myApp.cart);
-      displayCart(myApp.cart.items);
+      displayCart();
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -198,14 +200,14 @@ let addItemToCart = function(item){
   myApp.cart.items.push(item);
   console.log(myApp.cart);
   updateCart();
-  displayCart(myApp.cart.items);
+  displayCart();
 };
 
 let removeItemFromCart = function(e){
   let itemIndex = Number($(e.target).attr("data-cart-item-id"));
   myApp.cart.items.splice(itemIndex, 1);
   updateCart();
-  displayCart(myApp.cart.items);
+  displayCart();
 };
 //Items AJAX Requests
 //------------------------------------------------------------------------
