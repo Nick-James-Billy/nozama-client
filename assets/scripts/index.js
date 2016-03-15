@@ -111,19 +111,12 @@ let setSignOutListener = function(){
 //Purchase AJAX Requests
 //------------------------------------------------------------------------
 
-//Add index of item in cart array as an attribute to each item object in the cart
-let addIndexToCartItems = function(){
-  for (let i = 0; i < myApp.cart.items.length; i++){
-    myApp.cart.items[i].index = i;
-  }
-};
-
 //shows items in cart in cart dropdown
 //only displays purchases with completed:false
 let displayCart = function(items){
   let cartTemplate = require('./cart.handlebars');
   $('.cart').html(cartTemplate({items}));
-  console.log('display purchases');
+  console.log('display purchases: ' + items);
 };
 
 //gets purchase with completed: false, sets client cart equal to response,
@@ -207,6 +200,7 @@ let addItemToCart = function(item){
   updateCart();
   displayCart(myApp.cart.items);
 };
+
 
 //Items AJAX Requests
 //------------------------------------------------------------------------
