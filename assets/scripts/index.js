@@ -111,6 +111,12 @@ let setSignOutListener = function(){
 //Purchase AJAX Requests
 //------------------------------------------------------------------------
 
+let indexCartItems = function(){
+  for (let i = 0; i < myApp.cart.items.length; i++){
+    myApp.cart.items[i].index = i;
+  }
+};
+
 //shows items in cart in cart dropdown
 //only displays purchases with completed:false
 let displayCart = function(items){
@@ -132,8 +138,8 @@ let setCart = function(){
     })
     .done(function(data){
       console.log('get cart success');
-      console.log(data);
       myApp.cart = data.purchases[0];
+      console.log(myApp.cart);
       displayCart(myApp.cart.items);
     })
     .fail(function(jqxhr){
@@ -179,7 +185,8 @@ let updateCart = function(){
     },
     data: {
       "purchase":{
-        "items": myApp.cart.items
+        "items": myApp.cart.items,
+        "completed": myApp.cart.completed
       }
     }
   }).done(function() {
@@ -190,12 +197,12 @@ let updateCart = function(){
 };
 
 let addItemToCart = function(item){
-  console.log(item);
   myApp.cart.items.push(item);
   console.log(myApp.cart);
   updateCart();
   displayCart(myApp.cart.items);
 };
+
 //Items AJAX Requests
 //------------------------------------------------------------------------
 let displayItems = function(response){
@@ -204,6 +211,24 @@ let displayItems = function(response){
   let itemListingTemplate = require('./item-listing.handlebars');
   $('.content').append(itemListingTemplate({responseItems}));
   // console.log('display items');
+};
+
+let createCart = function() {
+  $.ajax({
+    url: myApp.BASE_URL + '/purchases',
+    method: 'POST',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    processData: false,
+    contentType: false,
+    data: {},
+  }).done(function(data) {
+    console.log('create empty cart');
+    setCart();
+  }).fail(function(jqxhr) {
+    console.error(jqxhr);
+  });
 };
 
 let indexItems = function(){
@@ -238,12 +263,19 @@ let getItem = function(e){
     });
 };
 
+let checkout = function() {
+  myApp.cart.completed = true;
+  updateCart();
+  createCart();
+};
+
 $(document).ready(() => {
   indexItems();
   $('.signed-out').show();
   $('.signed-in').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
+  $('.cart').on('click', '.checkout', checkout);
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
