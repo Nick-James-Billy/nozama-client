@@ -201,7 +201,12 @@ let addItemToCart = function(item){
   displayCart(myApp.cart.items);
 };
 
-
+let removeItemFromCart = function(e){
+  let itemIndex = Number($(e.target).attr("data-cart-item-id"));
+  myApp.cart.items.splice(itemIndex, 1);
+  updateCart();
+  displayCart(myApp.cart.items);
+};
 //Items AJAX Requests
 //------------------------------------------------------------------------
 let displayItems = function(response){
@@ -284,6 +289,7 @@ $(document).ready(() => {
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
   $('.cart').on('click', '.checkout', checkout);
+  $('.cart').on('click', '.remove-from-cart', removeItemFromCart);
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
