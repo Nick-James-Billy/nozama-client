@@ -26,10 +26,11 @@ let signIn = function(e){
   }).done(function(data) {
     // console.log(data);
     myApp.user = data.user;
-    // console.log(myApp.user);
+    console.log(myApp.cart);
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
+    // createCart();
     setCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
@@ -135,6 +136,7 @@ let setCart = function(){
     })
     .done(function(data){
       console.log('get cart success');
+      console.log(data);
       myApp.cart = data.purchases[0];
       console.log(myApp.cart);
       displayCart();
@@ -187,6 +189,7 @@ let updateCart = function(){
     }
   }).done(function() {
     console.log('task edit');
+    console.log(myApp.cart);
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -203,9 +206,14 @@ let addItemToCart = function(item){
 
 let removeItemFromCart = function(e){
   let itemIndex = Number($(e.target).attr("data-cart-item-id"));
+
   myApp.cart.items.splice(itemIndex, 1);
-  updateCart();
-  displayCart();
+  if(myApp.cart.items.length === 0) {
+    deleteCart();
+    } else {
+      updateCart();
+      displayCart();
+  }
 };
 //Items AJAX Requests
 //------------------------------------------------------------------------
@@ -273,6 +281,24 @@ let getItem = function(e){
     });
 };
 
+let deleteCart = function() {
+  $.ajax({
+  url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
+  type: 'DELETE',
+  headers: {
+    Authorization: 'Token token=' + myApp.user.token,
+  },
+  contentType: false,
+  processData: false,
+  })
+  .done(function() {
+    createCart();
+    console.log('suck it');
+  })
+  .fail(function(fail) {
+    console.log(fail);
+  });
+};
 //Called by checkout button in cart
 //Changes completed status of current cart to true, updates cart in database,
 //then creates a new cart to be displayed
