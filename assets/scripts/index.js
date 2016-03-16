@@ -306,7 +306,21 @@ let calculateTotal = function() {
 };
 
 let makeCharge = function(credentials){
-  
+  $.ajax({
+      url: myApp.BASE_URL + '/charge' ,
+      method: 'POST',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      datatype: 'json',
+      data: credentials
+    })
+    .done(function(data){
+      console.log(data);
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
 };
 
 let handler = StripeCheckout.configure({
@@ -318,10 +332,10 @@ let handler = StripeCheckout.configure({
       // You can access the token ID with `token.id`
       let credentials = {
       stripeToken: token.id,
-      amount: myApp.cart.total * 100
+      amount: 5000
     };
     console.log(credentials);
-    // makeCharge(credentials);
+    makeCharge(credentials);
   }
 });
 
