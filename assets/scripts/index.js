@@ -304,6 +304,7 @@ let makeCharge = function(credentials){
     })
     .done(function(data){
       console.log(data);
+      checkout();
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -315,8 +316,6 @@ let handler = StripeCheckout.configure({
     image: '/img/documentation/checkout/marketplace.png',
     locale: 'auto',
     token: function(token) {
-      // Use the token to create the charge with a server-side script.
-      // You can access the token ID with `token.id`
       let credentials = {
       stripeToken: token.id,
       amount: myApp.cart.total * 100
@@ -347,7 +346,6 @@ $(document).ready(() => {
   $('.signed-in').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
-  $('.cart').on('click', '.checkout', checkout);
   $('.cart').on('click', '.remove-from-cart', removeItemFromCart);
   setSignUpListener();
   setSignInListener();
