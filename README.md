@@ -47,6 +47,10 @@ This front-end app uses HTML, CSS/Bootstrap, JavaScript, jQuery, and AJAX.
 
 See initial wireframe [here](https://drive.google.com/file/d/0B7bwsjwFCuRgUW5pbGxOS21Pd1FvRFMxMzA4cmM0eG1fMWUw/view?usp=sharing)
 
+##Backend
+
+See backend repo [here](https://github.com/Nick-James-Billy/nozama-api)
+
 ## [License](LICENSE)
 
 Source code distributed under the MIT license. Text and other assets copyright
