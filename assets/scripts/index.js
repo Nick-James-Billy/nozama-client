@@ -305,6 +305,41 @@ let calculateTotal = function() {
   myApp.cart.total = total;
 };
 
+let makeCharge = function(credentials){
+  
+};
+
+let handler = StripeCheckout.configure({
+    key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+    image: '/img/documentation/checkout/marketplace.png',
+    locale: 'auto',
+    token: function(token) {
+      // Use the token to create the charge with a server-side script.
+      // You can access the token ID with `token.id`
+      let credentials = {
+      stripeToken: token.id,
+      amount: myApp.cart.total * 100
+    };
+    console.log(credentials);
+    // makeCharge(credentials);
+  }
+});
+
+$('.cart').on('click', '.checkout', function(e) {
+  // Open Checkout with further options
+  handler.open({
+    name: 'Nozama!',
+    description: 'YOU PAY NOW!',
+    amount: myApp.cart.total * 100
+  });
+  e.preventDefault();
+});
+
+// Close Checkout on page navigation
+$(window).on('popstate', function() {
+  handler.close();
+});
+
 $(document).ready(() => {
   indexItems();
   $('.signed-out').show();
