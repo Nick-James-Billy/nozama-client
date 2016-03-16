@@ -313,7 +313,7 @@ let makeCharge = function(credentials){
 
 let handler = StripeCheckout.configure({
     key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
-    image: '/img/documentation/checkout/marketplace.png',
+    image: '../../images/empty-hollywood-star-01.jpg',
     locale: 'auto',
     token: function(token) {
       let credentials = {
