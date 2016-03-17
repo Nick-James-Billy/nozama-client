@@ -16,6 +16,8 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   border-radius: 2px;
   margin: 30px;
   padding: 20px;
+  max-width: 285px;
+  min-height: 470px;
 }
 
 .card-img-top {
@@ -78,4 +80,13 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   color: $brick-red;
   font-size: 15px;
   font-weight: bold;
+}
+
+.card-bottom {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.add-to-cart {
+  font-size: 16px;
 }
