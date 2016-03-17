@@ -66,3 +66,16 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   margin-right: 20px;
   width: 35%;
 }
+
+.remove-from-cart:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.remove-from-cart {
+  background-color: transparent;
+  border-color: transparent;
+  color: $brick-red;
+  font-size: 15px;
+  font-weight: bold;
+}
