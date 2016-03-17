@@ -222,10 +222,8 @@ let removeItemFromCart = function(e){
 //------------------------------------------------------------------------
 let displayItems = function(response){
   let responseItems = response.items;
-  // console.log(responseItems);
   let itemListingTemplate = require('./item-listing.handlebars');
-  $('.content').append(itemListingTemplate({responseItems}));
-  // console.log('display items');
+  $('.content').html(itemListingTemplate({responseItems}));
 };
 
 //creates a new cart in database (empty items array, default completed: false)
@@ -316,7 +314,10 @@ let searchItem = function (e) {
     processData: false,
     data: search
   }).done(function(data) {
-    console.log(data);
+    console.log(data.item);
+    let item = data.item;
+    let itemListingTemplate = require('./item.handlebars');
+    $('.content').html(itemListingTemplate({item}));
   }).fail(function(fail) {
     console.error(fail);
   });
