@@ -193,6 +193,9 @@ let updateCart = function(){
       "purchase": myApp.cart
     }
   }).done(function() {
+    if (myApp.cart.completed === true){
+      createCart();
+    }
     console.log('task edit');
   }).fail(function(jqxhr) {
     console.error(jqxhr);
@@ -328,7 +331,6 @@ let searchItem = function (e) {
 let checkout = function() {
   myApp.cart.completed = true;
   updateCart();
-  createCart();
 };
 // calculates total of items
 let calculateTotal = function() {
