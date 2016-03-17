@@ -317,6 +317,7 @@ let searchItem = function (e) {
     let item = [data.item];
     let response = {items: item};
     displayItems(response);
+    $('#search-input').val("");
     $('.show-all').show();
   }).fail(function(fail) {
     console.error(fail);
