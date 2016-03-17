@@ -33,7 +33,7 @@ webpackJsonp([0],[
 	__webpack_require__(3);
 
 	var myApp = {
-	  BASE_URL: "https://mysterious-escarpment-95505.herokuapp.com"
+	  BASE_URL: "http://mysterious-escarpment-95505.herokuapp.com"
 	};
 
 	//Account AJAX requests
