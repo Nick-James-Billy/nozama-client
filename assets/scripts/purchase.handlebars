@@ -1,6 +1,6 @@
 <div class="purchase center-block" data-value={{_id}}>
   <table class="purchase-table">
-    <tr>
+    <tr class="table-top">
       <td>Item</td>
       <td>Price</td>
     </tr>
@@ -11,8 +11,8 @@
       </tr>
     {{/each}}
 
-    <tr>
-      <td>Total: ${{total}}</td>
+    <tr class="table-bottom">
+      <td>Total:</td><td>${{total}}</td>
     </tr>
   </table>
 </div>
