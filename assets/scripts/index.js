@@ -7,7 +7,7 @@
 require('./example');
 
 const myApp = {
-  BASE_URL: "http://mysterious-escarpment-95505.herokuapp.com"
+  BASE_URL: "https://mysterious-escarpment-95505.herokuapp.com"
 };
 
 //Account AJAX requests
