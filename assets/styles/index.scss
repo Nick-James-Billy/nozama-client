@@ -53,6 +53,10 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   background-size: cover;
 }
 
+h3{
+  color: $paper-white;
+}
+
 .big-header{
   color: $paper-white;
   border: 5px solid $paper-white;
@@ -63,6 +67,12 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   margin-top: 100px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.banner-text{
+  position: relative;
+  top: 20%;
+  transform: translateY(-50%);
 }
 
 .item-box {
@@ -77,6 +87,31 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   padding-bottom: 15px;
 }
 
+.purchase-history {
+  width: 100%;
+}
+
+.purchase-table {
+  width: 80%;
+  margin: auto;
+  table-layout: fixed;
+}
+
+.purchase {
+  border-bottom: 2px solid $charcoal-black;
+  margin-top: 7px;
+  padding: 5px;
+  width: 90%;
+}
+
+.table-top {
+  border-bottom: 1px solid $nav-bar-grey;
+  width: 80%;
+}
+
+.table-bottom {
+  border-top: 1px solid $nav-bar-grey;
+}
 
 .well {
   border: 2px solid $nav-bar-grey;
