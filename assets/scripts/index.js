@@ -7,7 +7,7 @@
 require('./example');
 
 const myApp = {
-  BASE_URL: "http://localhost:3000"
+  BASE_URL: "https://mysterious-escarpment-95505.herokuapp.com"
 };
 
 //Account AJAX requests
@@ -136,10 +136,15 @@ let setCart = function(){
       dataType: 'json'
     })
     .done(function(data){
-      console.log('get cart success');
-      myApp.cart = data.purchases[0];
-      console.log(myApp.cart);
-      displayCart();
+      if (!data.purchases[0]){
+        createCart();
+      }
+      else{
+        console.log('get cart success');
+        myApp.cart = data.purchases[0];
+        console.log(myApp.cart);
+        displayCart();
+      }
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -217,10 +222,8 @@ let removeItemFromCart = function(e){
 //------------------------------------------------------------------------
 let displayItems = function(response){
   let responseItems = response.items;
-  // console.log(responseItems);
   let itemListingTemplate = require('./item-listing.handlebars');
-  $('.content').append(itemListingTemplate({responseItems}));
-  // console.log('display items');
+  $('.content').html(itemListingTemplate({responseItems}));
 };
 
 //creates a new cart in database (empty items array, default completed: false)
@@ -278,7 +281,7 @@ let getItem = function(e){
       console.error(jqxhr);
     });
 };
-
+// Removes cart from db
 let deleteCart = function() {
   $.ajax({
     url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
@@ -291,13 +294,12 @@ let deleteCart = function() {
   })
   .done(function() {
     createCart();
-    console.log('suck it');
   })
   .fail(function(fail) {
     console.log(fail);
   });
 };
-
+// search returns one matching item from db
 let searchItem = function (e) {
   e.preventDefault();
   let search = $('#search-input').val();
@@ -311,7 +313,11 @@ let searchItem = function (e) {
     processData: false,
     data: search
   }).done(function(data) {
-    console.log(data);
+    let item = [data.item];
+    let response = {items: item};
+    displayItems(response);
+    $('#search-input').val("");
+    $('.show-all').show();
   }).fail(function(fail) {
     console.error(fail);
   });
@@ -324,7 +330,7 @@ let checkout = function() {
   updateCart();
   createCart();
 };
-
+// calculates total of items
 let calculateTotal = function() {
   let cartItems = myApp.cart.items;
   let total = 0;
@@ -334,7 +340,7 @@ let calculateTotal = function() {
   myApp.cart.total = total;
   console.log(total);
 };
-
+// Sends ajax request to complete a stripe charge
 let makeCharge = function(credentials){
   $.ajax({
       url: myApp.BASE_URL + '/charge',
@@ -353,7 +359,7 @@ let makeCharge = function(credentials){
       console.error(jqxhr);
     });
 };
-
+// configures stripe checkout
 let handler = StripeCheckout.configure({
     key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
     image: '../../images/empty-hollywood-star-01.jpg',
@@ -387,9 +393,12 @@ $(document).ready(() => {
   $('#item-search').on('submit', searchItem);
   $('.signed-out').show();
   $('.signed-in').hide();
+  $('.show-all').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
   $('.cart').on('click', '.remove-from-cart', removeItemFromCart);
+  $('.show-all').on('click', indexItems);
+  $('.show-all').on('click', () => $('.show-all').hide());
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
