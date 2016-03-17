@@ -30,6 +30,7 @@ let signIn = function(e){
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
+    indexItems();
     setCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
@@ -100,6 +101,7 @@ let setSignOutListener = function(){
       },
     }).done(function() {
       console.log("Logged Out!");
+
       $('.signed-out').show();
       $('.signed-in').hide();
     }).fail(function(jqxhr) {
@@ -295,6 +297,25 @@ let deleteCart = function() {
     console.log(fail);
   });
 };
+
+let searchItem = function (e) {
+  e.preventDefault();
+  let search = $('#search-input').val();
+  $.ajax({
+    url: myApp.BASE_URL + '/search',
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    contentType: false,
+    processData: false,
+    data: search
+  }).done(function(data) {
+    console.log(data);
+  }).fail(function(fail) {
+    console.error(fail);
+  });
+};
 //Called by checkout button in cart
 //Changes completed status of current cart to true, updates cart in database,
 //then creates a new cart to be displayed
@@ -316,7 +337,7 @@ let calculateTotal = function() {
 
 let makeCharge = function(credentials){
   $.ajax({
-      url: myApp.BASE_URL + '/charge' ,
+      url: myApp.BASE_URL + '/charge',
       method: 'POST',
       headers: {
         Authorization: 'Token token=' + myApp.user.token,
@@ -363,7 +384,7 @@ $(window).on('popstate', function() {
 });
 
 $(document).ready(() => {
-  indexItems();
+  $('#item-search').on('submit', searchItem);
   $('.signed-out').show();
   $('.signed-in').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);

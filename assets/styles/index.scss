@@ -2,18 +2,80 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
 @import '~bootstrap-sass/assets/stylesheets/bootstrap';
 @import 'colors';
 
+.container {
+  margin-top: 25px;
+}
+
 .content {
   margin-left: auto;
   margin-right: auto;
 }
 
 .card {
-  border: 1px solid $charcoal-black;
-  border-radius: 5px;
+  border: 3px solid $charcoal-black;
+  border-radius: 2px;
   margin: 30px;
   padding: 20px;
 }
 
 .card-img-top {
   width: 100%;
+}
+
+.navbar {
+  background-color: $charcoal-black;
+}
+
+.btn:hover {
+  color: $nav-bar-grey;
+}
+
+.btn {
+  background-color: $charcoal-black;
+  border-color: $charcoal-black;
+  color: $paper-white;
+
+}
+
+.big-header {
+  font-size: 100px;
+}
+
+.welcome-banner {
+  font-size: 100px;
+  text-align: center;
+}
+
+.item-box {
+  text-align: right;
+  padding-top: 10px;
+  border-bottom: 1px solid $charcoal-black;
+}
+
+.item-listing {
+  padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 15px;
+}
+
+
+.well {
+  border: 2px solid $nav-bar-grey;
+  float: right;
+  font-size: 16px;
+  margin-right: 20px;
+  width: 35%;
+}
+
+.remove-from-cart:hover {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.remove-from-cart {
+  background-color: transparent;
+  border-color: transparent;
+  color: $brick-red;
+  font-size: 15px;
+  font-weight: bold;
 }
