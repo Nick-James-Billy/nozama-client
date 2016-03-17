@@ -317,6 +317,7 @@ let searchItem = function (e) {
     let item = [data.item];
     let response = {items: item};
     displayItems(response);
+    $('.show-all').show();
   }).fail(function(fail) {
     console.error(fail);
   });
@@ -392,9 +393,12 @@ $(document).ready(() => {
   $('#item-search').on('submit', searchItem);
   $('.signed-out').show();
   $('.signed-in').hide();
+  $('.show-all').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
   $('.cart').on('click', '.remove-from-cart', removeItemFromCart);
+  $('.show-all').on('click', indexItems);
+  $('.show-all').on('click', () => $('.show-all').hide());
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();
