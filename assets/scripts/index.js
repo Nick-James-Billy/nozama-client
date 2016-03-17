@@ -7,7 +7,7 @@
 require('./example');
 
 const myApp = {
-  BASE_URL: "http://localhost:3000"
+  BASE_URL: "https://mysterious-escarpment-95505.herokuapp.com"
 };
 
 //Account AJAX requests
@@ -136,10 +136,15 @@ let setCart = function(){
       dataType: 'json'
     })
     .done(function(data){
-      console.log('get cart success');
-      myApp.cart = data.purchases[0];
-      console.log(myApp.cart);
-      displayCart();
+      if (!data.purchases[0]){
+        createCart();
+      }
+      else{
+        console.log('get cart success');
+        myApp.cart = data.purchases[0];
+        console.log(myApp.cart);
+        displayCart();
+      }
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
