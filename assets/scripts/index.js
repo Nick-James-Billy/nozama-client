@@ -7,7 +7,7 @@
 require('./example');
 
 const myApp = {
-  BASE_URL: "http://localhost:3000"
+  BASE_URL: "https://mysterious-escarpment-95505.herokuapp.com"
 };
 
 //Account AJAX requests
@@ -26,11 +26,11 @@ let signIn = function(e){
   }).done(function(data) {
     // console.log(data);
     myApp.user = data.user;
-    console.log(myApp.cart);
+    // console.log(myApp.user);
     $('.signed-out').hide();
     $('.signed-in').show();
     $('#sign-in-modal').modal('hide');
-    // createCart();
+    indexItems();
     setCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
@@ -49,7 +49,7 @@ let setSignUpListener = function(){
       processData: false,
       data: formData,
     }).done(function(data) {
-      console.log(data);
+      // console.log(data);
       signIn(e);
       $('#sign-up-modal').modal('hide');
     }).fail(function(jqxhr) {
@@ -81,7 +81,7 @@ let setChangePasswordListener = function(){
       processData: false,
       data: formData,
     }).done(function(data) {
-        console.log(data);
+      // console.log(data);
       $('#change-password-modal').modal('hide');
     }).fail(function(jqxhr) {
       console.error(jqxhr);
@@ -101,6 +101,7 @@ let setSignOutListener = function(){
       },
     }).done(function() {
       console.log("Logged Out!");
+
       $('.signed-out').show();
       $('.signed-in').hide();
     }).fail(function(jqxhr) {
@@ -117,8 +118,10 @@ let setSignOutListener = function(){
 let displayCart = function(){
   calculateTotal();
   let cart = myApp.cart;
+  console.log("cart"+ myApp.cart);
   let cartTemplate = require('./cart.handlebars');
   $('.cart').html(cartTemplate({cart}));
+  console.log('display items: ' + myApp.cart.items);
 };
 
 //gets purchase with completed: false, sets client cart equal to response,
@@ -133,9 +136,15 @@ let setCart = function(){
       dataType: 'json'
     })
     .done(function(data){
-      console.log('get cart success');
-      myApp.cart = data.purchases[0];
-      displayCart();
+      if (!data.purchases[0]){
+        createCart();
+      }
+      else{
+        console.log('get cart success');
+        myApp.cart = data.purchases[0];
+        console.log(myApp.cart);
+        displayCart();
+      }
     })
     .fail(function(jqxhr){
       console.error(jqxhr);
@@ -145,8 +154,10 @@ let setCart = function(){
 //Shows purchase history in purchase histroy modal
 let displayPurchases = function(response){
   let responsePurchases = response;
+  console.log(responsePurchases);
   let purchaseListingTemplate = require('./purchase-listing.handlebars');
   $('.purchase-history').html(purchaseListingTemplate({responsePurchases}));
+  console.log('display purchases');
 };
 
 //retrieves purchases with completed: true, then calls function to display them
@@ -161,6 +172,7 @@ let getPurchaseHistory = function(){
   })
   .done(function(data){
     console.log('get purchases success');
+    console.log(data);
     displayPurchases(data.purchases);
   })
   .fail(function(jqxhr){
@@ -181,7 +193,10 @@ let updateCart = function(){
       "purchase": myApp.cart
     }
   }).done(function() {
-    console.log('Cart Updated');
+    if (myApp.cart.completed === true){
+      createCart();
+    }
+    console.log('task edit');
   }).fail(function(jqxhr) {
     console.error(jqxhr);
   });
@@ -191,19 +206,19 @@ let updateCart = function(){
 //then updates cart in database and displays updated cart
 let addItemToCart = function(item){
   myApp.cart.items.push(item);
+  console.log(myApp.cart);
   updateCart();
   displayCart();
 };
 
 let removeItemFromCart = function(e){
   let itemIndex = Number($(e.target).attr("data-cart-item-id"));
-
   myApp.cart.items.splice(itemIndex, 1);
   if(myApp.cart.items.length === 0) {
     deleteCart();
-    } else {
-      updateCart();
-      displayCart();
+  } else {
+    updateCart();
+    displayCart();
   }
 };
 //Items AJAX Requests
@@ -211,7 +226,7 @@ let removeItemFromCart = function(e){
 let displayItems = function(response){
   let responseItems = response.items;
   let itemListingTemplate = require('./item-listing.handlebars');
-  $('.content').append(itemListingTemplate({responseItems}));
+  $('.content').html(itemListingTemplate({responseItems}));
 };
 
 //creates a new cart in database (empty items array, default completed: false)
@@ -227,7 +242,7 @@ let createCart = function() {
     contentType: false,
     data: {},
   }).done(function(data) {
-    console.log(data + ' create empty cart');
+    console.log('create empty cart');
     setCart();
   }).fail(function(jqxhr) {
     console.error(jqxhr);
@@ -243,6 +258,7 @@ let indexItems = function(){
       dataType: 'json'
     })
     .done(function(data){
+      // console.log(data);
       console.log('index items success');
       displayItems(data);
     })
@@ -268,23 +284,45 @@ let getItem = function(e){
       console.error(jqxhr);
     });
 };
-
+// Removes cart from db
 let deleteCart = function() {
   $.ajax({
-  url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
-  type: 'DELETE',
-  headers: {
-    Authorization: 'Token token=' + myApp.user.token,
-  },
-  contentType: false,
-  processData: false,
+    url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
+    type: 'DELETE',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    contentType: false,
+    processData: false,
   })
   .done(function() {
     createCart();
-    console.log('suck it');
   })
   .fail(function(fail) {
     console.log(fail);
+  });
+};
+// search returns one matching item from db
+let searchItem = function (e) {
+  e.preventDefault();
+  let search = $('#search-input').val();
+  $.ajax({
+    url: myApp.BASE_URL + '/search',
+    method: 'GET',
+    headers: {
+      Authorization: 'Token token=' + myApp.user.token,
+    },
+    contentType: false,
+    processData: false,
+    data: search
+  }).done(function(data) {
+    let item = [data.item];
+    let response = {items: item};
+    displayItems(response);
+    $('#search-input').val("");
+    $('.show-all').show();
+  }).fail(function(fail) {
+    console.error(fail);
   });
 };
 //Called by checkout button in cart
@@ -293,9 +331,8 @@ let deleteCart = function() {
 let checkout = function() {
   myApp.cart.completed = true;
   updateCart();
-  createCart();
 };
-
+// calculates total of items
 let calculateTotal = function() {
   let cartItems = myApp.cart.items;
   let total = 0;
@@ -303,16 +340,67 @@ let calculateTotal = function() {
     total += Number(item.price);
   });
   myApp.cart.total = total;
+  console.log(total);
 };
+// Sends ajax request to complete a stripe charge
+let makeCharge = function(credentials){
+  $.ajax({
+      url: myApp.BASE_URL + '/charge',
+      method: 'POST',
+      headers: {
+        Authorization: 'Token token=' + myApp.user.token,
+      },
+      datatype: 'json',
+      data: credentials
+    })
+    .done(function(data){
+      console.log(data);
+      checkout();
+    })
+    .fail(function(jqxhr){
+      console.error(jqxhr);
+    });
+};
+// configures stripe checkout
+let handler = StripeCheckout.configure({
+    key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+    image: '../../images/empty-hollywood-star-01.jpg',
+    locale: 'auto',
+    token: function(token) {
+      let credentials = {
+      stripeToken: token.id,
+      amount: myApp.cart.total * 100
+    };
+    console.log(credentials);
+    makeCharge(credentials);
+  }
+});
+
+$('.cart').on('click', '.checkout', function(e) {
+  // Open Checkout with further options
+  handler.open({
+    name: 'Nozama!',
+    description: 'YOU PAY NOW!',
+    amount: myApp.cart.total * 100
+  });
+  e.preventDefault();
+});
+
+// Close Checkout on page navigation
+$(window).on('popstate', function() {
+  handler.close();
+});
 
 $(document).ready(() => {
-  indexItems();
+  $('#item-search').on('submit', searchItem);
   $('.signed-out').show();
   $('.signed-in').hide();
+  $('.show-all').hide();
   $('#purchase-history-btn').on('click', getPurchaseHistory);
   $('.content').on('click', '.add-to-cart', getItem);
-  $('.cart').on('click', '.checkout', checkout);
   $('.cart').on('click', '.remove-from-cart', removeItemFromCart);
+  $('.show-all').on('click', indexItems);
+  $('.show-all').on('click', () => $('.show-all').hide());
   setSignUpListener();
   setSignInListener();
   setChangePasswordListener();

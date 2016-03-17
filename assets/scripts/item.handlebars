@@ -1,9 +1,12 @@
 
-<div class="card col-xs-10 col-sm-5 col-lg-3">
+<div class="card col-xs-10 col-sm-6 col-lg-3">
   <img class="card-img-top" src="{{imageLocation}}">
   <div class="card-block">
-    <h4 class="card-title"> {{name}}: ${{price}} </h4>
+    <h4 class="card-title"> {{name}} </h4>
     <p class="card-text"> {{description}} </p>
+  </div>
+  <div class="card-bottom" style="position: absolute; bottom: 0">
+    <div class="price">${{price}}</div>
     <button type="button" class="btn btn-success btn-xs add-to-cart" data-item-id="{{_id}}">Add To Cart</button>
   </div>
 </div>
