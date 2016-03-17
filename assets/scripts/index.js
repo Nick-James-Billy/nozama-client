@@ -300,8 +300,7 @@ let deleteCart = function() {
 
 let searchItem = function (e) {
   e.preventDefault();
-  debugger;
-  let item = new FormData(e.target);
+  let search = $('#search-input').val();
   $.ajax({
     url: myApp.BASE_URL + '/search',
     method: 'GET',
@@ -310,7 +309,7 @@ let searchItem = function (e) {
     },
     contentType: false,
     processData: false,
-    data: 'mel'
+    data: search
   }).done(function(data) {
     console.log(data);
   }).fail(function(fail) {
