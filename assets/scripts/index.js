@@ -281,7 +281,7 @@ let getItem = function(e){
       console.error(jqxhr);
     });
 };
-
+// Removes cart from db
 let deleteCart = function() {
   $.ajax({
     url: myApp.BASE_URL + '/purchases/' + myApp.cart._id,
@@ -294,13 +294,12 @@ let deleteCart = function() {
   })
   .done(function() {
     createCart();
-    console.log('suck it');
   })
   .fail(function(fail) {
     console.log(fail);
   });
 };
-
+// search returns one matching item from db
 let searchItem = function (e) {
   e.preventDefault();
   let search = $('#search-input').val();
@@ -331,7 +330,7 @@ let checkout = function() {
   updateCart();
   createCart();
 };
-
+// calculates total of items
 let calculateTotal = function() {
   let cartItems = myApp.cart.items;
   let total = 0;
@@ -341,7 +340,7 @@ let calculateTotal = function() {
   myApp.cart.total = total;
   console.log(total);
 };
-
+// Sends ajax request to complete a stripe charge
 let makeCharge = function(credentials){
   $.ajax({
       url: myApp.BASE_URL + '/charge',
@@ -360,7 +359,7 @@ let makeCharge = function(credentials){
       console.error(jqxhr);
     });
 };
-
+// configures stripe checkout
 let handler = StripeCheckout.configure({
     key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
     image: '../../images/empty-hollywood-star-01.jpg',
