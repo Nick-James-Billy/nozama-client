@@ -314,10 +314,9 @@ let searchItem = function (e) {
     processData: false,
     data: search
   }).done(function(data) {
-    console.log(data.item);
-    let item = data.item;
-    let itemListingTemplate = require('./item.handlebars');
-    $('.content').html(itemListingTemplate({item}));
+    let item = [data.item];
+    let response = {items: item};
+    displayItems(response);
   }).fail(function(fail) {
     console.error(fail);
   });
